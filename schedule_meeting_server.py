@@ -27,23 +27,23 @@ def schedule_meeting():
     if request.method == "POST":
         meeting_date = datetime.strptime(request.form['meeting_date'], '%Y-%m-%d')
         meeting_time = datetime.strptime(request.form['meeting_time'], '%H:%M').time()
-        meetingDT = datetime.combine(meeting_date, meeting_time)
+        meeting_datetime = datetime.combine(meeting_date, meeting_time)
 
         now = datetime.now()
 
-        if meetingDT - timedelta(hours=3, minutes=5) < now:
+        if meeting_datetime - timedelta(hours=3, minutes=5) < now:
             flash('Appointmenttest time must be at least 3:05 hours from now')
             return render_template('index.html')
 
-        meetingDT = meetingDT - timedelta(hours=3)
+        reminder_datetime = meeting_datetime - timedelta(hours=3)
 
-        message = "{customer_name}, you have a meeting scheduled for {meeting_time}".format(customer_name=request.form['customer_name'], meeting_time=str(meetingDT))
+        message = "{customer_name}, you have a meeting scheduled for {meeting_time}".format(customer_name=request.form['customer_name'], meeting_time=str(meeting_datetime))
         to = "{country_code}{phone}".format(country_code=app.config['COUNTRY_CODE'], phone=request.form['phone'])
 
-        send_reminder.apply_async([to, message], eta=meetingDT)
+        send_reminder.apply_async([to, message], eta=reminder_datetime)
 
         return render_template('success.html', name=request.form['customer_name'], meeting_name=request.form['meeting_name'],
-                               phone=request.form['phone'], meetingDT=str(meetingDT))
+                               phone=request.form['phone'], meeting_datetime=str(meeting_datetime))
 
     return render_template('index.html')
 
