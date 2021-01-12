@@ -1,4 +1,4 @@
-# Meeting Scheduler
+# Appointment Reminder
 
 ### Environment setup
 
@@ -128,6 +128,6 @@ if __name__ == '__main__':
 Make sure [redis](https://redis.io/topics/quickstart) is running in the background, and then start the Celery task and Python server. Assuming your code is in `schedule_meeting_server.py`.
 
 ```bash
-celery worker -A schedule_meeting_server.celery --loglevel=info
+celery -A schedule_meeting_server.celery worker
 python schedule_meeting_server.py
 ```
